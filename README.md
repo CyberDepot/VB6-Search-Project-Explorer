@@ -13,7 +13,9 @@ The Visual Basic 6 (VB6) IDE Dont Have Any Tools For Search in Project Explorer 
 ![Settings](https://user-images.githubusercontent.com/11265147/59603414-9ec0e980-911e-11e9-94fa-576e4932ef73.png)
 
 ### How To Use?
+
 1- Open Project And Compile It
+
 ![Compile](https://user-images.githubusercontent.com/11265147/59603693-52c27480-911f-11e9-8921-3f9315e91a9c.JPG)
 
 2- Close Vb6 IDE And ReOpen It
