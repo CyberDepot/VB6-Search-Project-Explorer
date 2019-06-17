@@ -19,6 +19,7 @@ The Visual Basic 6 (VB6) IDE Dont Have Any Tools For Search in Project Explorer 
 2- Close Vb6 IDE And ReOpen It
 
 3- Goto Add-ins Menu And Select Add-in
+
 ![Add-ins](https://user-images.githubusercontent.com/11265147/59603694-535b0b00-911f-11e9-8b22-203ae8a4c77c.JPG)
 
 4- Search a Form, Module or Class Name in Search Box Then Press Enter, Then Select One Of Result And Press Enter!
