@@ -1,7 +1,7 @@
 # VB6-Search-Project-Explorer
 Add-in for add search explorer project functionality to vb6
 
-The Visual Basic 6 (VB6) IDE Dont Have Any Tools For Search in Project Explorer And When You Work On a Big ProjectT You Spend Many Of Your Time For Find Forms, Modules Or Classes. This Tools Create For Cover This Problem!
+The Visual Basic 6 (VB6) IDE Dont Have Any Tools For Search in Project Explorer And When You Work On a Big Project, You Spend Many Of Your Time For Find Forms, Modules Or Classes. This Tools Create For Cover This Problem!
 
 ### Add-in 
 ![Component](https://user-images.githubusercontent.com/11265147/59603351-746f2c00-911e-11e9-8a1b-c02add639d5f.gif)
