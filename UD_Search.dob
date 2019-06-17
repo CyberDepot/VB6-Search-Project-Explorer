@@ -1,0 +1,176 @@
+VERSION 5.00
+Begin VB.UserDocument UD_Search 
+   AutoRedraw      =   -1  'True
+   ClientHeight    =   825
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   2730
+   ClipControls    =   0   'False
+   BeginProperty Font 
+      Name            =   "Tahoma"
+      Size            =   8.25
+      Charset         =   178
+      Weight          =   400
+      Underline       =   0   'False
+      Italic          =   0   'False
+      Strikethrough   =   0   'False
+   EndProperty
+   HScrollSmallChange=   225
+   ScaleHeight     =   825
+   ScaleMode       =   0  'User
+   ScaleWidth      =   2730
+   ScrollBars      =   0  'None
+   VScrollSmallChange=   25
+   Begin VB.PictureBox Pic_Setting 
+      Appearance      =   0  'Flat
+      BackColor       =   &H80000005&
+      BorderStyle     =   0  'None
+      ForeColor       =   &H80000008&
+      Height          =   255
+      Left            =   1050
+      Picture         =   "UD_Search.dox":0000
+      ScaleHeight     =   255
+      ScaleWidth      =   255
+      TabIndex        =   1
+      TabStop         =   0   'False
+      Top             =   30
+      Width           =   255
+   End
+   Begin VB.ComboBox ComboForms 
+      Height          =   315
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   1035
+   End
+End
+Attribute VB_Name = "UD_Search"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = True
+Option Explicit
+
+Public Connect As Connect
+Dim MyStr As String
+Dim ChangeFlag As Boolean
+
+Private Sub AddToList(ByVal StrSearch As String)
+    ComboForms.Clear
+    
+    Dim Comp As VBComponent
+    Dim Ctl As VBControl
+    Dim Frm As VBForm
+    
+    For Each Comp In VBInstance.ActiveVBProject.VBComponents
+        If (Comp.Type = vbext_ct_MSForm Or _
+            Comp.Type = vbext_ct_UserControl _
+            Or Comp.Type = vbext_ct_VBForm Or _
+            Comp.Type = vbext_ct_VBMDIForm) Then
+        
+            'if Nothing To Search
+            If GeneratePattern = Empty Then Exit Sub
+            
+            If RegExp(GeneratePattern, Comp.Name) = True Then ComboForms.AddItem Comp.Name
+        End If
+    Next
+    
+    ChangeFlag = False
+    ComboForms.Text = StrSearch
+    ComboForms.SelLength = Len(StrSearch)
+    If ComboForms.ListCount <> 0 Then MyStr = ComboForms.List(0)
+    SendMessage ComboForms.hwnd, CB_SHOWDROPDOWN, True, ByVal 0
+End Sub
+
+Private Function GeneratePattern() As String
+    '(?=.*?(Str1))(?=.*?(Str2))
+    Dim MyPattern As String
+    Dim i As Integer
+    
+    MyPattern = MyStr
+    
+    'Replace 2 Space With 1
+    MyPattern = Replace(MyStr, "  ", " ")
+    
+    'if Nothing To Search
+    If Trim$(MyPattern) = Empty Then Exit Function
+    
+    Dim MySplit
+    MySplit = Split(MyPattern, " ")
+    
+    For i = LBound(MySplit) To UBound(MySplit)
+        GeneratePattern = GeneratePattern & "(?=.*?(" & MySplit(i) & "))"
+    Next i
+End Function
+
+Function RegExp(MyPattern As String, myString As String) As Boolean
+   'Create objects.
+   Dim objRegExp As RegExp
+
+   ' Create a regular expression object.
+   Set objRegExp = New RegExp
+
+   'Set the pattern by using the Pattern property.
+   objRegExp.Pattern = MyPattern
+
+   ' Set Case Insensitivity.
+   objRegExp.IgnoreCase = True
+
+   'Set global applicability.
+   objRegExp.Global = True
+
+   'Test whether the String can be compared.
+   If (objRegExp.Test(myString) = True) Then RegExp = True
+End Function
+
+Private Sub ComboForms_KeyPress(KeyAscii As Integer)
+    Select Case KeyAscii
+        'numbers,alphabet,underline,BackSpace,Enter,Space
+        Case 48 To 57, 65 To 90, 97 To 122, 95, 8, 13, 32
+            
+        Case Else
+            KeyAscii = 0
+            
+    End Select
+End Sub
+
+Private Sub ComboForms_KeyUp(KeyCode As Integer, Shift As Integer)
+    Select Case KeyCode
+    
+        Case vbKeyUp, vbKeyDown, vbKeyLeft, vbKeyRight, vbKeyPageUp, vbKeyPageDown, vbKeyHome, vbKeyEnd
+            If ComboForms.ListIndex <> -1 Then ChangeFlag = False
+            
+        Case Is = 13
+        
+        Case Else
+            ChangeFlag = True
+            MyStr = ComboForms.Text
+    End Select
+    
+    If KeyCode = 13 Then
+        If ChangeFlag = True Then
+            Call AddToList(MyStr)
+        Else
+            If ComboForms.ListIndex > -1 Then
+                Dim MyFormName As String
+                MyFormName = ComboForms.List(ComboForms.ListIndex)
+                
+                If Show_Code = True Then VBInstance.ActiveVBProject.VBComponents.Item(MyFormName).CodeModule.CodePane.Show
+                If Show_Disign = True Then VBInstance.ActiveVBProject.VBComponents.Item(MyFormName).DesignerWindow.Visible = True
+                
+                ComboForms.SetFocus
+            End If
+        End If
+    End If
+End Sub
+
+Private Sub Pic_Setting_Click()
+    frmAddIn.Show vbModal
+    'Call SetOntop(frmAddIn, f_Ontop)
+End Sub
+
+Private Sub UserDocument_Resize()
+    ComboForms.Width = UserDocument.Width - Pic_Setting.Width - 75
+    Pic_Setting.Left = UserDocument.Width - Pic_Setting.Width - 50
+End Sub
+
